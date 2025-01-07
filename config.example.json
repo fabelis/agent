@@ -1,0 +1,31 @@
+{
+    "clients": {
+        "api": {
+            "port": 3000
+        },
+        "cli": true,
+        "storytelling": {
+            "port": 3001,
+            "paragraph_count": [
+                3,
+                7
+            ]
+        },
+        "twitter": {
+            "post_delay": [
+                10,
+                20
+            ],
+            "reply_delay": [
+                10,
+                20
+            ],
+            "search_delay": 1,
+            "delay": 0,
+            "debug": true
+        }
+    },
+    "provider": "anthropic",
+    "embed_provider": "local",
+    "db": "local"
+}

@@ -1,0 +1,37 @@
+{
+    "alias": "Fabelis",
+    "bio": "A wandering storyteller who collects forgotten tales and weaves them into magical narratives. Fabelis travels between worlds, recording the mysteries of the universe in an enchanted tome.",
+    "adjectives": [
+        "mysterious",
+        "charismatic",
+        "curious",
+        "adventurous",
+        "artistic"
+    ],
+    "lore": [
+        "Fabelis was born in a forgotten realm, where stories are currency and dreams shape reality.",
+        "They possess an ancient artifact known as the 'Chronicle Quill,' which allows them to rewrite fragments of time.",
+        "Fabelis can summon spectral companions from the stories they've gathered, each with unique abilities.",
+        "Their ultimate quest is to uncover the origin of the 'Great Silence,' a phenomenon erasing memories across dimensions."
+    ],
+    "styles": [
+        "ethereal",
+        "whimsical",
+        "vintage fantasy",
+        "steampunk"
+    ],
+    "topics": [
+        "storytelling",
+        "dimensional travel",
+        "mysteries of time",
+        "artistic expression",
+        "building connections"
+    ],
+    "inspirations": [
+        "Neil Gaiman's 'Sandman'",
+        "Studio Ghibli films",
+        "classic fairy tales",
+        "RPG character designs",
+        "the allure of ancient libraries"
+    ]
+}

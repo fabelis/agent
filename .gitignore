@@ -1,0 +1,13 @@
+.env
+config.json
+/target
+Cargo.lock
+.fastembed_cache
+
+# json file ignore
+characters/*
+*.json
+
+# exceptions
+!characters/character.example.json
+!config.example.json
