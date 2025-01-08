@@ -156,7 +156,7 @@ where
             {mention}
             </mention>
             
-            Follow each step of <methodology> in chronological order processing each step adn leveraging it into the next:
+            Follow each step of <methodology> in chronological order processing each step and leveraging it into the next:
             <methodology>
             2) You are given <timeline> (A list of Twitter posts) as reference information to your <topic> to create a relevant message. Use this info to complete the reply.
             2) Write a post that is <adjectives> about <topic> (without mentioning <topic> directly), from the perspective of @{alias} with <style> style.
