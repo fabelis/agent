@@ -1,4 +1,7 @@
 <p align="center">
+<img src="imgs/banner.png" alt="Fabelis Banner" width="100%" />
+</p>
+<p align="center">
 <h1 align="center">FABELIS.AI Agent</h1>
 <p align="center">
 A framework for AI-driven storytelling and content generation
@@ -105,6 +108,8 @@ cargo run -- --character fabelis.json
 
 ## Looking For More?
 **View Our Docs [here](https://docs.fabelis.ai)**
+ - **[EXAMPLES](https://docs.fabelis.ai/examples)**
+ - **[SUPPORT](https://docs.fabelis.ai/support)**
 
 ---
 <p align="center">Built with 🤖 and ❤️ by the Fabelis Team</p>
