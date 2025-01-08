@@ -103,7 +103,7 @@ cargo run -- --character fabelis.json
 | Cohere | OpenAI | MongoDB | CLI |
 | Gemini | XAI | - | Story-Telling |
 | OpenAI | Local | - | Twitter |
-| Perplexity | - | MongoDB | - |
+| Perplexity | - | - | - |
 | XAI | Cohere | - | - |
 
 ## Looking For More?
