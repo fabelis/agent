@@ -224,6 +224,19 @@ async fn main() -> Result<(), Box<dyn Error>> {
                 client.start().await;
             });
         }
+        if config.enabled_clients.contains(&core::Clients::Telegram)
+            && config.client_configs.telegram.is_some()
+        {
+            let client = clients::TelegramClient::new(
+                character.clone(),
+                completion_model.clone(),
+                config.clone().client_configs.telegram.unwrap(),
+            )
+            .await;
+            join_set.spawn(async move {
+                client.start().await;
+            });
+        }
 
         // start clients
         while let Some(result) = join_set.join_next().await {

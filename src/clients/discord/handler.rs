@@ -2,7 +2,7 @@ use super::Config;
 use crate::{
     core::{
         Agent, Character,
-        CharacterTrait::{Adjectives, Inspirations, Lore, Styles, Topics},
+        CharacterTrait::{Adjectives, Inspirations, Lore, Styles},
     },
     providers::completion::CompletionResponseEnum,
 };
@@ -47,6 +47,8 @@ where
     ) -> String {
         format!(
             r"<characterInfo>
+            This is your name:
+            {alias}
             These describe you:
             <adjectives>
             {adjectives}
@@ -157,13 +159,15 @@ where
                 messages.len()
             );
 
+            let alias = ctx.cache.current_user().name.clone();
+
             // Generate post prompt
             let prompt = self.generate_reply_prompt(
                 ctx.cache.current_user().name.clone(),
                 msg.content.clone(),
                 messages,
             );
-            debug!("[TWITTER][POST] Generated prompt:\n{}", prompt);
+            debug!("[DISCORD][HANDLER] Generated prompt:\n{}", prompt);
 
             let history = self.fetch_history().await;
 
@@ -173,8 +177,8 @@ where
             .completion_model
             .completion_request(&prompt)
             .preamble(format!(
-                "Your name: {}. Your Bio: {}. Use <characterInfo> and <surroundingMessages> to generate a Discord message reply as @{} to <message>. Don't make your responses start like your previous ones. You MUST follow ALL the <rules>.",
-                self.character.alias, self.character.bio, ctx.cache.current_user().name
+                "Your name: {}. Your Bio: {}. Use <characterInfo> and <surroundingMessages> to generate a Discord message reply to <message> as @{alias} the Discord Bot. Don't make your responses start like your previous ones. You MUST follow ALL the <rules>.",
+                self.character.alias, self.character.bio
             ))
             .messages(history.iter().rev().cloned().collect())
             .build();

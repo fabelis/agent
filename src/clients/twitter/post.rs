@@ -33,8 +33,6 @@ where
         let prompt = self.generate_post_prompt(topic, tweets);
         debug!("[TWITTER][POST] Generated prompt:\n{}", prompt);
 
-        info!("{:?}", self.post_history.iter().rev());
-
         // Build the request for the completion model
         let request = self
             .agent

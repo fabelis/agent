@@ -67,7 +67,11 @@ Create a `config.json` in the root directory, reference config.example.json
         "discord": {
             "surrounding_messages": 10, // number of messages to consider for selection
             "selection_rate": 0.1 // probability of selecting a message
-        }
+        },
+        "telegram": {
+            "surrounding_messages": 10, // number of messages to consider for selection
+            "selection_rate": 0.1 // probability of selecting a message
+        },
     },
     "enabled_clients": [
         "twitter", "discord", "storytelling" // can be any combination of the following
@@ -110,8 +114,8 @@ cargo run -- --character fabelis.json
 | Cohere | OpenAI | MongoDB | CLI |
 | Gemini | XAI | - | Story-Telling |
 | OpenAI | Local | - | Twitter |
-| Perplexity | - | - | - |
-| XAI | Cohere | - | - |
+| Perplexity | - | - | Discord **NEW** |
+| XAI | Cohere | - | Telegram **NEW** |
 
 ## Looking For More?
 **View Our Docs [here](https://docs.fabelis.ai)**
