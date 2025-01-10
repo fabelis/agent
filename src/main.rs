@@ -161,15 +161,17 @@ async fn main() -> Result<(), Box<dyn Error>> {
     };
 
     // cli and other clients cannot run at the same time
-    if config.clients.cli.is_some() {
+    if config.enabled_clients.contains(&core::Clients::Cli) && config.client_configs.cli.is_some() {
         let mut cli_client = CliClient::new(character, completion_model);
         cli_client.start().await;
     } else {
         // store clients using JoinSet for concurrency
         let mut join_set = JoinSet::new();
 
-        if config.clients.api.is_some() {
-            let config = config.clone().clients.api.unwrap();
+        if config.enabled_clients.contains(&core::Clients::Api)
+            && config.client_configs.api.is_some()
+        {
+            let config = config.clone().client_configs.api.unwrap();
             let client = Arc::new(clients::ApiClient::new(
                 character.clone(),
                 completion_model.clone(),
@@ -179,8 +181,12 @@ async fn main() -> Result<(), Box<dyn Error>> {
                 client.start().await;
             });
         }
-        if config.clients.storytelling.is_some() {
-            let config = config.clone().clients.storytelling.unwrap();
+        if config
+            .enabled_clients
+            .contains(&core::Clients::Storytelling)
+            && config.client_configs.storytelling.is_some()
+        {
+            let config = config.clone().client_configs.storytelling.unwrap();
             let client = Arc::new(clients::StoryTellingClient::new(
                 character.clone(),
                 completion_model.clone(),
@@ -190,12 +196,14 @@ async fn main() -> Result<(), Box<dyn Error>> {
                 client.start().await;
             });
         }
-        if config.clients.twitter.is_some() {
+        if config.enabled_clients.contains(&core::Clients::Twitter)
+            && config.client_configs.twitter.is_some()
+        {
             let mut client = clients::TwitterClient::new(
                 character.clone(),
                 completion_model.clone(),
                 embedding_model.clone(),
-                config.clone().clients.twitter.unwrap(),
+                config.clone().client_configs.twitter.unwrap(),
                 config.clone(),
             )
             .await;
@@ -203,11 +211,13 @@ async fn main() -> Result<(), Box<dyn Error>> {
                 client.start().await;
             });
         }
-        if config.clients.discord.is_some() {
+        if config.enabled_clients.contains(&core::Clients::Discord)
+            && config.client_configs.discord.is_some()
+        {
             let client = clients::DiscordClient::new(
                 character.clone(),
                 completion_model.clone(),
-                config.clone().clients.discord.unwrap(),
+                config.clone().client_configs.discord.unwrap(),
             )
             .await;
             join_set.spawn(async move {

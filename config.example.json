@@ -1,5 +1,5 @@
 {
-    "clients": {
+    "client_configs": {
         "api": {
             "port": 3000
         },
@@ -29,7 +29,10 @@
             "selection_rate": 0.1
         }
     },
-    "provider": "anthropic",
+    "enabled_clients": [
+        "twitter"
+    ],
+    "completion_provider": "anthropic",
     "embed_provider": "local",
     "db": "local"
 }

@@ -50,22 +50,29 @@ where
         .messages(self.post_history.iter().rev().cloned().collect())
         .build();
 
-        let mention_idx = match self.agent.completion(request).await {
-            Ok(response) => self
-                .agent
-                .response_extract_content(response)
-                .trim()
-                .parse::<usize>()
-                .expect("[TWITTER][REPLY] Failed to parse mention idx"),
+        let mention_idx_str = match self.agent.completion(request).await {
+            Ok(response) => self.agent.response_extract_content(response),
             Err(e) => {
                 error!("[TWITTER][REPLY] Failed to generate completion: {}", e);
                 return;
             }
         };
 
-        let mention = latest_mentions
-            .get(mention_idx)
-            .expect("[TWITTER][REPLY] Invalid mention idx");
+        let mention_idx = match mention_idx_str.trim().parse::<usize>() {
+            Ok(idx) => idx,
+            Err(e) => {
+                error!("[TWITTER][REPLY] Failed to parse mention idx: {}", e);
+                return;
+            }
+        };
+
+        let mention = match latest_mentions.get(mention_idx) {
+            Some(mention) => mention,
+            None => {
+                error!("[TWITTER][REPLY] Invalid mention idx: {}", mention_idx);
+                return;
+            }
+        };
 
         let topic = self
             .character

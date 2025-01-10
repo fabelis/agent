@@ -1,15 +1,12 @@
-use crate::{
-    clients::{ApiConfig, DiscordConfig, StorytellingConfig, TwitterConfig},
-    core::CONFIG_PATH,
-};
+use crate::clients::{ApiConfig, DiscordConfig, StorytellingConfig, TwitterConfig};
 use serde::Deserialize;
 use std::fs;
 
 #[derive(Deserialize, Debug, Clone)]
 pub struct Config {
-    pub clients: Clients,
+    pub client_configs: ClientConfigs,
+    pub enabled_clients: Vec<Clients>,
     pub completion_provider: CompletionProvider,
-
     #[serde(default = "default_embedding_provider")]
     pub embedding_provider: EmbeddingProvider,
     #[serde(default = "default_db")]
@@ -69,9 +66,24 @@ pub enum CompletionProvider {
     XAI,
 }
 
-// Clients
+// Client
+#[derive(Deserialize, Debug, Clone, PartialEq)]
+pub enum Clients {
+    #[serde(rename = "api")]
+    Api,
+    #[serde(rename = "cli")]
+    Cli,
+    #[serde(rename = "discord")]
+    Discord,
+    #[serde(rename = "storytelling")]
+    Storytelling,
+    #[serde(rename = "twitter")]
+    Twitter,
+}
+
+// Client Configs
 #[derive(Deserialize, Debug, Clone)]
-pub struct Clients {
+pub struct ClientConfigs {
     pub api: Option<ApiConfig>,
     pub cli: Option<bool>,
     pub discord: Option<DiscordConfig>,
