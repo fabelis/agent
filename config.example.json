@@ -27,6 +27,10 @@
         "discord": {
             "surrounding_messages": 10,
             "selection_rate": 0.1
+        },
+	"telegram": {
+            "surrounding_messages": 10,
+            "selection_rate": 0.1
         }
     },
     "enabled_clients": [
