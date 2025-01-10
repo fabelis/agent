@@ -5,7 +5,6 @@ use rig::{
     Embed,
 };
 use serde::{Deserialize, Serialize};
-use std::future::Future;
 
 #[derive(Clone)]
 pub struct MemoryStore<D, EM>
@@ -35,64 +34,63 @@ where
     D: Embed + Serialize + Send + Sync + Eq + Clone,
     EM: EmbeddingModel,
 {
-    fn add(&mut self, document: D) -> impl Future<Output = Result<(), anyhow::Error>> + Send {
-        async {
-            let embedding = EmbeddingsBuilder::new(self.embedding_model.clone())
-                .document(document)?
-                .build()
-                .await?;
+    async fn add(&mut self, document: D) -> Result<(), anyhow::Error> {
+        let embedding = EmbeddingsBuilder::new(self.embedding_model.clone())
+            .document(document)?
+            .build()
+            .await?;
 
-            self.store.add_documents(embedding);
-
-            Ok(())
-        }
+        self.store.add_documents(embedding);
+        Ok(())
     }
 
-    fn add_many(
-        &mut self,
-        documents: Vec<D>,
-    ) -> impl Future<Output = Result<(), anyhow::Error>> + Send {
-        async {
-            let embedding = EmbeddingsBuilder::new(self.embedding_model.clone())
-                .documents(documents)?
-                .build()
-                .await?;
+    async fn add_many(&mut self, documents: Vec<D>) -> Result<(), anyhow::Error> {
+        let embedding = EmbeddingsBuilder::new(self.embedding_model.clone())
+            .documents(documents)?
+            .build()
+            .await?;
 
-            self.store.add_documents(embedding);
+        self.store.add_documents(embedding);
 
-            Ok(())
-        }
+        Ok(())
     }
 
-    fn top_n<T: for<'a> Deserialize<'a> + Send>(
+    async fn top_n<T: for<'a> Deserialize<'a> + Send>(
         &self,
         query: &str,
         n: usize,
-    ) -> impl Future<Output = Result<Vec<(f64, String, T)>, VectorStoreError>> + Send {
+    ) -> Result<Vec<(f64, String, T)>, VectorStoreError> {
         let query = query.to_string();
-        async move {
-            let index = self.store.clone().index(self.embedding_model.clone());
-            let results = index.top_n(&query, n).await?;
-            results
-                .into_iter()
-                .map(|(score, id, value)| {
-                    let t = serde_json::from_value(value)?;
-                    Ok((score, id, t))
-                })
-                .collect()
-        }
+
+        let index = self.store.clone().index(self.embedding_model.clone());
+        let results = index.top_n(&query, n).await?;
+        results
+            .into_iter()
+            .map(|(score, id, value)| {
+                let t = serde_json::from_value(value)?;
+                Ok((score, id, t))
+            })
+            .collect()
     }
 
-    fn top_n_ids(
+    async fn top_n_ids(
         &self,
         query: &str,
         n: usize,
-    ) -> impl Future<Output = Result<Vec<(f64, String)>, VectorStoreError>> + Send {
+    ) -> Result<Vec<(f64, String)>, VectorStoreError> {
         let query = query.to_string();
-        async move {
-            let index = self.store.clone().index(self.embedding_model.clone());
-            let results = index.top_n_ids(&query, n).await?;
-            Ok(results.into_iter().collect::<Vec<_>>())
-        }
+
+        let index = self.store.clone().index(self.embedding_model.clone());
+        let results = index.top_n_ids(&query, n).await?;
+        Ok(results.into_iter().collect::<Vec<_>>())
+    }
+
+    async fn clear(&mut self) -> Result<(), anyhow::Error> {
+        *self = Self::new(self.embedding_model.clone());
+        Ok(())
+    }
+
+    async fn count(&self) -> Result<usize, anyhow::Error> {
+        Ok(self.store.len())
     }
 }

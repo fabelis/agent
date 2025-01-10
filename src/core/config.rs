@@ -1,5 +1,5 @@
 use crate::{
-    clients::{ApiConfig, StorytellingConfig, TwitterConfig},
+    clients::{ApiConfig, DiscordConfig, StorytellingConfig, TwitterConfig},
     core::CONFIG_PATH,
 };
 use serde::Deserialize;
@@ -16,10 +16,12 @@ pub struct Config {
     pub db: DatabaseProvider,
 }
 
-pub fn load() -> Result<Config, Box<dyn std::error::Error>> {
-    let config_content = fs::read_to_string(CONFIG_PATH)?;
-    let config: Config = serde_json::from_str(&config_content)?;
-    Ok(config)
+impl Config {
+    pub fn new(path: String) -> Result<Self, anyhow::Error> {
+        let config_content = fs::read_to_string(path)?;
+        let config: Config = serde_json::from_str(&config_content)?;
+        Ok(config)
+    }
 }
 
 // DBS
@@ -72,6 +74,7 @@ pub enum CompletionProvider {
 pub struct Clients {
     pub api: Option<ApiConfig>,
     pub cli: Option<bool>,
+    pub discord: Option<DiscordConfig>,
     pub storytelling: Option<StorytellingConfig>,
     pub twitter: Option<TwitterConfig>,
 }

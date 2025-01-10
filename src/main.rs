@@ -4,7 +4,9 @@ mod dbs;
 mod providers;
 use clap::Parser;
 use clients::CliClient;
-use core::{load_config, Character, CompletionProvider, EmbeddingProvider, CHARACTERS_FOLDER};
+use core::{
+    Character, CompletionProvider, Config, EmbeddingProvider, CHARACTERS_FOLDER, CONFIG_PATH,
+};
 use dotenv::dotenv;
 use fern::colors::{Color, ColoredLevelConfig};
 use log::{error, info};
@@ -20,6 +22,8 @@ use tokio::task::JoinSet;
 struct Args {
     #[arg(short, long)]
     character: Option<String>,
+    #[arg(long)]
+    config: Option<String>,
 }
 
 #[tokio::main]
@@ -50,8 +54,10 @@ async fn main() -> Result<(), Box<dyn Error>> {
     info!("Starting FABELIS.AI Agent...");
 
     // load config.json
-    info!("[SETUP] Loading from config.json...");
-    let config = load_config().expect("Failed to load config.json");
+    let config_path = &args.config.unwrap_or(CONFIG_PATH.to_string());
+    info!("[SETUP] Loading from {config_path}...");
+    let config =
+        Config::new(config_path.to_string()).expect(&format!("Failed to load {config_path}"));
     info!("[SETUP] Loaded: {:#?}", config);
 
     // load .env
@@ -190,7 +196,18 @@ async fn main() -> Result<(), Box<dyn Error>> {
                 completion_model.clone(),
                 embedding_model.clone(),
                 config.clone().clients.twitter.unwrap(),
-                config,
+                config.clone(),
+            )
+            .await;
+            join_set.spawn(async move {
+                client.start().await;
+            });
+        }
+        if config.clients.discord.is_some() {
+            let client = clients::DiscordClient::new(
+                character.clone(),
+                completion_model.clone(),
+                config.clone().clients.discord.unwrap(),
             )
             .await;
             join_set.spawn(async move {

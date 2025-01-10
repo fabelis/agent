@@ -23,6 +23,10 @@
             "search_delay": 1,
             "delay": 0,
             "debug": true
+        },
+        "discord": {
+            "surrounding_messages": 10,
+            "selection_rate": 0.1
         }
     },
     "provider": "anthropic",

@@ -25,4 +25,8 @@ where
         query: &str,
         n: usize,
     ) -> impl Future<Output = Result<Vec<(f64, String)>, VectorStoreError>> + Send;
+
+    fn clear(&mut self) -> impl Future<Output = Result<(), anyhow::Error>> + Send;
+
+    fn count(&self) -> impl Future<Output = Result<usize, anyhow::Error>> + Send;
 }

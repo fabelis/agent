@@ -59,4 +59,18 @@ where
             Self::MongoDB { memory_store } => memory_store.top_n_ids(query, n).await,
         }
     }
+
+    async fn clear(&mut self) -> Result<(), anyhow::Error> {
+        match self {
+            Self::Local { memory_store } => memory_store.clear().await,
+            Self::MongoDB { memory_store } => memory_store.clear().await,
+        }
+    }
+
+    async fn count(&self) -> Result<usize, anyhow::Error> {
+        match self {
+            Self::Local { memory_store } => memory_store.count().await,
+            Self::MongoDB { memory_store } => memory_store.count().await,
+        }
+    }
 }
