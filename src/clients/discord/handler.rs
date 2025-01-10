@@ -85,10 +85,9 @@ where
             <rules>
             - minimize the number of sentences needed in your response.
             - <message> is your most important piece of information and <surroundingMessages> MUST be used to make you blend in with the conversation.
-            - Less than 280 characters. 
-            - No emojis. 
+            - Less than 100 characters. 
             - No hashtags.
-            - No italics.
+            - Minimize declaring actions
             - This new response MUST not use the same words as the previous messages attached.
             </rules>
             ",
