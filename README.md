@@ -36,38 +36,45 @@ git clone git@github.com:fabelis/agent.git
 ```
 
 ### Step 2: Configure Your Agent
-Create a `config.json` in the root directory:
+Create a `config.json` in the root directory, reference config.example.json
 ```json
 {
-    "clients": {
+    "client_configs": {
         "api": {
             "port": 3000
         },
-        "cli": true,
+        "cli": true, // cannot be true and used with other clients
         "storytelling": {
             "port": 3001,
             "paragraph_count": [
-                3,
-                7
+                3, // min
+                7 // max
             ]
         },
         "twitter": {
             "post_delay": [
-                10,
-                20
+                10, // min
+                20 // max
             ],
             "reply_delay": [
-                10,
-                20
+                10, // min
+                20 // max
             ],
-            "search_delay": 1,
-            "delay": 0,
+            "search_delay": 1, // delay between searches
+            "delay": 0, // delay between posts
             "debug": true
+        },
+        "discord": {
+            "surrounding_messages": 10, // number of messages to consider for selection
+            "selection_rate": 0.1 // probability of selecting a message
         }
     },
-    "provider": "anthropic",
-    "embed_provider": "local",
-    "db": "local"
+    "enabled_clients": [
+        "twitter", "discord", "storytelling" // can be any combination of the following
+    ],
+    "completion_provider": "anthropic", || "cohere" || "gemini" || "openai" || "perplexity" || "xai" 
+    "embed_provider": "local", || "openai"
+    "db": "local" || "mongodb"
 }
 ```
 **ONLY Include Agents you want to run**
