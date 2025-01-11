@@ -7,7 +7,7 @@ use rig::completion::Document;
 use std::{collections::HashMap, result::Result::Ok};
 
 #[derive(serde::Deserialize)]
-pub struct RequestQueryParams {
+pub struct QueryParams {
     section_count: usize
 }
 
@@ -16,7 +16,7 @@ impl<CM> Client<CM>
 where
     CM: rig::completion::CompletionModel<Response = CompletionResponseEnum> + 'static,
 {
-    pub async fn request_route(&self, query: web::Query<RequestQueryParams>) -> impl Responder {
+    pub async fn gen_route(&self, query: web::Query<QueryParams>) -> impl Responder {
         let mut documents: Vec<Document> = Vec::new();
 
         for i in 0..query.section_count {
