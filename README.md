@@ -108,14 +108,14 @@ cargo run -- --character fabelis.json
 
 ## Supported Integrations  (more to come...)
 
-| Completion Providers | Embedding Providers | Databases | Clients |
-|:-----------------:|:------------------:|:----------:|:--------:|
-| Anthropic | Local | Local | API |
-| Cohere | OpenAI | MongoDB | CLI |
-| Gemini | XAI | - | Story-Telling |
-| OpenAI | Local | - | Twitter |
-| Perplexity | - | - | Discord **NEW** |
-| XAI | Cohere | - | Telegram **NEW** |
+| Completion Providers | Embedding Providers | Misc Providers | Databases | Clients |
+|:-----------------:|:-----------------:|:------------------:|:----------:|:--------:|
+| Anthropic | Local | Elevenlabs **NEW** | Local | API |
+| Cohere | OpenAI | - | MongoDB | CLI |
+| Gemini | XAI | - | - | Story-Telling |
+| OpenAI | - | - | - | Twitter |
+| Perplexity | - | - | - | Discord **NEW** |
+| XAI | - | - | - | Telegram **NEW** |
 
 ## Looking For More?
 **View Our Docs [here](https://docs.fabelis.ai)**
