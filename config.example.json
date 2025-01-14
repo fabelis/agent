@@ -9,7 +9,8 @@
             "paragraph_count": [
                 3,
                 7
-            ]
+            ],
+	    "use_tts": true
         },
         "twitter": {
             "post_delay": [
