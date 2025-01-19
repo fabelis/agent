@@ -237,6 +237,21 @@ async fn main() -> Result<(), Box<dyn Error>> {
                 client.start().await;
             });
         }
+        if config.enabled_clients.contains(&core::Clients::Truth)
+            && config.client_configs.truth.is_some()
+        {
+            let mut client = clients::TruthClient::new(
+                character.clone(),
+                completion_model.clone(),
+                embedding_model.clone(),
+                config.clone().client_configs.truth.unwrap(),
+                config.clone(),
+            )
+            .await;
+            join_set.spawn(async move {
+                client.start().await;
+            });
+        }
 
         // start clients
         while let Some(result) = join_set.join_next().await {

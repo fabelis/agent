@@ -1,4 +1,6 @@
-use crate::clients::{ApiConfig, DiscordConfig, StorytellingConfig, TelegramConfig, TwitterConfig};
+use crate::clients::{
+    ApiConfig, DiscordConfig, StorytellingConfig, TelegramConfig, TruthConfig, TwitterConfig,
+};
 use serde::Deserialize;
 use std::fs;
 
@@ -81,6 +83,8 @@ pub enum Clients {
     Telegram,
     #[serde(rename = "twitter")]
     Twitter,
+    #[serde(rename = "truth")]
+    Truth,
 }
 
 // Client Configs
@@ -92,4 +96,5 @@ pub struct ClientConfigs {
     pub storytelling: Option<StorytellingConfig>,
     pub telegram: Option<TelegramConfig>,
     pub twitter: Option<TwitterConfig>,
+    pub truth: Option<TruthConfig>,
 }

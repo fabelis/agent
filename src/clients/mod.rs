@@ -3,6 +3,7 @@ pub mod cli;
 pub mod discord;
 pub mod storytelling;
 pub mod telegram;
+pub mod truth;
 pub mod twitter;
 
 pub use api::Client as ApiClient;
@@ -14,5 +15,7 @@ pub use storytelling::Client as StoryTellingClient;
 pub use storytelling::Config as StorytellingConfig;
 pub use telegram::Client as TelegramClient;
 pub use telegram::Config as TelegramConfig;
+pub use truth::Client as TruthClient;
+pub use truth::Config as TruthConfig;
 pub use twitter::Client as TwitterClient;
 pub use twitter::Config as TwitterConfig;

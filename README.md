@@ -51,6 +51,19 @@ Create a `config.json` in the root directory, reference config.example.json
                 7 // max
             ]
         },
+        "truth": {
+            "post_delay": [
+                10, // min
+                20 // max
+            ],
+            "reply_delay": [
+                10, // min
+                20 // max
+            ],
+            "search_delay": 1, // delay between searches
+            "delay": 0, // delay between posts
+            "debug": true
+        },
         "twitter": {
             "post_delay": [
                 10, // min
@@ -74,7 +87,7 @@ Create a `config.json` in the root directory, reference config.example.json
         },
     },
     "enabled_clients": [
-        "twitter", "discord", "storytelling" // can be any combination of the following
+        "twitter", "discord", "storytelling", "truth", "telegram" // can be any combination of the following
     ],
     "completion_provider": "anthropic", || "cohere" || "gemini" || "openai" || "perplexity" || "xai" 
     "embed_provider": "local", || "openai"
@@ -116,6 +129,7 @@ cargo run -- --character fabelis.json
 | OpenAI | - | - | - | Twitter |
 | Perplexity | - | - | - | Discord **NEW** |
 | XAI | - | - | - | Telegram **NEW** |
+| - | - | - | - | Truth Social **NEW** |
 
 ## Looking For More?
 **View Our Docs [here](https://docs.fabelis.ai)**
