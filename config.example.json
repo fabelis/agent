@@ -9,8 +9,7 @@
             "paragraph_count": [
                 3,
                 7
-            ],
-	    "use_tts": true
+            ]
         },
         "twitter": {
             "post_delay": [
@@ -29,13 +28,26 @@
             "surrounding_messages": 10,
             "selection_rate": 0.1
         },
-	"telegram": {
+        "telegram": {
             "surrounding_messages": 10,
             "selection_rate": 0.1
+        },
+        "truth": {
+            "post_delay": [
+                10,
+                30
+            ],
+            "reply_delay": [
+                2,
+                10
+            ],
+            "search_delay": 0,
+            "delay": 0,
+            "debug": false
         }
     },
     "enabled_clients": [
-        "twitter"
+        "truth"
     ],
     "completion_provider": "anthropic",
     "embed_provider": "local",
