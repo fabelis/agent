@@ -20,7 +20,7 @@ pub struct Profile {
     pub followers_count: i64,
     pub following_count: i64,
     pub statuses_count: i64,
-    pub last_status_at: String,
+    pub last_status_at: Option<String>,
     pub verified: bool,
     pub location: String,
     pub website: String,

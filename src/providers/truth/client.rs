@@ -35,7 +35,7 @@ impl Client {
                 followers_count: 0,
                 following_count: 0,
                 statuses_count: 0,
-                last_status_at: String::new(),
+                last_status_at: None,
                 verified: false,
                 location: String::new(),
                 website: String::new(),
