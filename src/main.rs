@@ -3,7 +3,7 @@ mod core;
 mod dbs;
 mod providers;
 use clap::Parser;
-use clients::CliClient;
+use clients::{CliClient, DashboardClient};
 use core::{
     Character, CompletionProvider, Config, EmbeddingProvider, CHARACTERS_FOLDER, CONFIG_PATH,
 };
@@ -24,6 +24,8 @@ struct Args {
     character: Option<String>,
     #[arg(long)]
     config: Option<String>,
+    #[arg(short, long)]
+    dashboard: bool,
 }
 
 #[tokio::main]
@@ -63,19 +65,6 @@ async fn main() -> Result<(), Box<dyn Error>> {
     // load .env
     dotenv().ok();
     info!("[SETUP] Loaded .env");
-
-    // load character
-    let character_path = format!(
-        "{}/{}",
-        CHARACTERS_FOLDER,
-        args.character
-            .unwrap_or("character.example.json".to_string())
-    );
-    info!("[SETUP] Loading character: {}", character_path);
-    let mut character = Character::new(character_path);
-    character
-        .load()
-        .expect("Failed to load character from file");
 
     // load completion model
     let completion_model: CompletionModelEnum = match config.completion_provider {
@@ -159,6 +148,25 @@ async fn main() -> Result<(), Box<dyn Error>> {
             EmbeddingModelEnum::XAI { model: provider }
         }
     };
+
+    if args.dashboard {
+        let mut client = DashboardClient::new(completion_model, config.clone());
+        client.start().await;
+        return Ok(());
+    }
+
+    // load character
+    let character_path = format!(
+        "{}/{}",
+        CHARACTERS_FOLDER,
+        args.character
+            .unwrap_or("character.example.json".to_string())
+    );
+    info!("[SETUP] Loading character: {}", character_path);
+    let mut character = Character::new(character_path);
+    character
+        .load()
+        .expect("Failed to load character from file");
 
     // cli and other clients cannot run at the same time
     if config.enabled_clients.contains(&core::Clients::Cli) && config.client_configs.cli.is_some() {

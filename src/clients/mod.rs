@@ -1,5 +1,6 @@
 pub mod api;
 pub mod cli;
+pub mod dashboard;
 pub mod discord;
 pub mod storytelling;
 pub mod telegram;
@@ -9,6 +10,7 @@ pub mod twitter;
 pub use api::Client as ApiClient;
 pub use api::Config as ApiConfig;
 pub use cli::Client as CliClient;
+pub use dashboard::Client as DashboardClient;
 pub use discord::Client as DiscordClient;
 pub use discord::Config as DiscordConfig;
 pub use storytelling::Client as StoryTellingClient;
