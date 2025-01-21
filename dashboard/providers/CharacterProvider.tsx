@@ -11,6 +11,8 @@ export interface CharacterContextProps {
   characters: Character[];
   selectedCharacter: Character | null;
   setSelectedCharacter: (character: Character) => void;
+  saveCharacter: (character: Character) => void;
+  reloadCharacter: () => void;
 }
 
 export type Character = {
@@ -41,6 +43,16 @@ export const CharacterProvider: React.FC<CharacterProviderProps> = ({
   );
 
   useEffect(() => {
+    fetchCharacters();
+  }, []);
+
+  useEffect(() => {
+    if (characters.length > 0 && !selectedCharacter) {
+      setSelectedCharacter(characters[0]);
+    }
+  }, [characters]);
+
+  const fetchCharacters = () => {
     fetch("/api/characters")
       .then((res) => {
         if (!res.ok) {
@@ -54,18 +66,52 @@ export const CharacterProvider: React.FC<CharacterProviderProps> = ({
       .catch((error) => {
         setCharacters([]);
       });
-  }, []);
+  };
 
-  useEffect(() => {
-    if (characters.length > 0 && !selectedCharacter) {
-      setSelectedCharacter(characters[0]);
-    }
-  }, [characters]);
+  const saveCharacter = (character: Character) => {
+    fetch("/api/character/save", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(character),
+    })
+      .then((res) => {
+        if (!res.ok) {
+          throw new Error(`Failed to save character: ${res.status}`);
+        }
+        return res.json();
+      })
+      .then((data) => {
+        setSelectedCharacter(data);
+      })
+      .catch((error) => {
+        fetchCharacters();
+      });
+  };
+
+  const reloadCharacter = () => {
+    fetch(`/api/character/load?file=${selectedCharacter?.path_name}`)
+      .then((res) => {
+        if (!res.ok) {
+          throw new Error(`Failed to load character: ${res.status}`);
+        }
+        return res.json();
+      })
+      .then((data) => {
+        setSelectedCharacter(data);
+      })
+      .catch((error) => {
+        setSelectedCharacter(null);
+      });
+  };
 
   const contextValue = {
     characters,
     selectedCharacter,
     setSelectedCharacter,
+    saveCharacter,
+    reloadCharacter,
   };
 
   return (

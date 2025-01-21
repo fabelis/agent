@@ -13,7 +13,7 @@ import { usePathname } from "next/navigation";
 const data: any = {
   "/": "Home",
   "/chat": "Chat Room",
-  "/character": "Character",
+  "/character": "Character Editor",
 };
 
 const Breadcrumb = () => {
@@ -38,14 +38,15 @@ const BreadcrumbData = () => {
 
   return (
     <>
-      {pathname == "/chat" && (
-        <>
-          <BreadcrumbSeparator className="hidden md:block" />
-          <BreadcrumbItem>
-            <BreadcrumbPage>{selectedCharacter?.alias}</BreadcrumbPage>
-          </BreadcrumbItem>
-        </>
-      )}
+      {pathname == "/chat" ||
+        ("/character" && (
+          <>
+            <BreadcrumbSeparator className="hidden md:block" />
+            <BreadcrumbItem>
+              <BreadcrumbPage>{selectedCharacter?.alias}</BreadcrumbPage>
+            </BreadcrumbItem>
+          </>
+        ))}
     </>
   );
 };
