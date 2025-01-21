@@ -33,7 +33,6 @@ const data = [
   {
     title: "Character",
     url: "/character",
-    disabled: true,
     icon: Bot,
   },
   {
