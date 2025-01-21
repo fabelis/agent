@@ -1,5 +1,6 @@
 use super::ChatClient;
 use crate::{
+    clients::dashboard::CharacterClient,
     core::{Agent, Config},
     providers::completion::CompletionResponseEnum,
 };
@@ -60,6 +61,11 @@ where
             chat_client.start().await;
         });
 
-        let _ = tokio::try_join!(bun_handle, chat_handle);
+        let character_client = CharacterClient::new(self.agent.clone());
+        let character_handle = tokio::spawn(async move {
+            character_client.start().await;
+        });
+
+        let _ = tokio::try_join!(bun_handle, chat_handle, character_handle);
     }
 }
