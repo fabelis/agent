@@ -36,18 +36,15 @@ where
     pub async fn start(self: Self) {
         info!("[CHAT][API] Started");
 
-        // Create API server
         let server = HttpServer::new(move || {
             App::new()
-                // Enable logging middleware for better debugging
                 .wrap(middleware::Logger::default())
-                // Enable CORS middleware
                 .wrap(
                     Cors::default()
                         .allow_any_origin()
                         .allow_any_method()
                         .allow_any_header()
-                        .max_age(3600), // Cache the CORS preflight response for 1 hour
+                        .max_age(3600),
                 )
                 .app_data(web::Data::new(Arc::new(self.clone())))
                 .route(
@@ -62,7 +59,6 @@ where
         .bind(("127.0.0.1", 3001))
         .expect("Failed to bind server");
 
-        // Start server
         info!("[CHAT][API] Started HTTP server on 127.0.0.1:3001");
         let _ = server.run().await;
     }
