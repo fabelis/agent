@@ -9,6 +9,19 @@ import { Character, useCharacter } from "@/providers/CharacterProvider";
 import { Sparkles, X, Save, Plus } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { useState, useEffect } from "react";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Label } from "@/components/ui/label";
+import { useToast } from "@/hooks/use-toast";
+import { ProgressSpinner } from "@/components/ui/progress-spinner";
+import { Checkbox } from "@/components/ui/checkbox";
 
 export default function CharacterPage() {
   const { selectedCharacter, saveCharacter } = useCharacter();
@@ -16,6 +29,9 @@ export default function CharacterPage() {
     new Set()
   );
   const [editableCharacter, setEditableCharacter] = useState<Character | null>(
+    null
+  );
+  const [aiEditedCharacter, setAiEditedCharacter] = useState<Character | null>(
     null
   );
 
@@ -129,31 +145,98 @@ export default function CharacterPage() {
           >
             <Plus />
           </Button>
-          <Button variant="outline" size="sm">
-            <Sparkles className="h-4 w-4 mr-2" />
-            Generate with AI
-          </Button>
+          {aiEditedCharacter !== null &&
+          editableCharacter?.[key] !== aiEditedCharacter?.[key] ? (
+            renderAiChangesButtons()
+          ) : (
+            <GenerateButton
+              title={title}
+              field={key}
+              editableCharacter={editableCharacter}
+              aiEditedCharacter={aiEditedCharacter}
+              onSuccess={setAiEditedCharacter}
+            />
+          )}
         </div>
       </div>
       {editableCharacter &&
-        (editableCharacter[key] as string[]).map((item, index) => (
-          <div key={index} className="flex items-center space-x-2">
-            <Input
-              value={item}
-              onChange={(e) => handleArrayChange(key, index, e.target.value)}
-              className="flex-grow"
-            />
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={() => handleRemoveItem(key, index)}
-            >
-              <X className="h-4 w-4" />
-            </Button>
-          </div>
-        ))}
+        (aiEditedCharacter && editableCharacter[key] !== aiEditedCharacter[key]
+          ? (aiEditedCharacter[key] as string[]).map((item, index) => (
+              <div key={index} className="flex items-center space-x-2">
+                <div className="animate-pulse w-full">
+                  <Input
+                    disabled
+                    value={item}
+                    onChange={(e) =>
+                      handleArrayChange(key, index, e.target.value)
+                    }
+                    className={`flex-grow ${
+                      !editableCharacter[key][index] ||
+                      editableCharacter[key][index] !== item
+                        ? "border-2 border-primary disabled:!opacity-100"
+                        : ""
+                    }`}
+                  />
+                </div>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  disabled
+                  onClick={() => handleRemoveItem(key, index)}
+                >
+                  <X className="h-4 w-4" />
+                </Button>
+              </div>
+            ))
+          : (editableCharacter[key] as string[]).map((item, index) => (
+              <div key={index} className="flex items-center space-x-2">
+                <Input
+                  value={item}
+                  onChange={(e) =>
+                    handleArrayChange(key, index, e.target.value)
+                  }
+                  className="flex-grow"
+                />
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => handleRemoveItem(key, index)}
+                >
+                  <X className="h-4 w-4" />
+                </Button>
+              </div>
+            )))}
     </div>
   );
+
+  const renderAiChangesButtons = () => {
+    return (
+      <div className="flex items-center gap-2 flex-wrap">
+        <Button
+          onClick={() => {
+            if (!editableCharacter || !aiEditedCharacter) return;
+            setEditableCharacter(aiEditedCharacter);
+            setAiEditedCharacter(null);
+          }}
+          size="sm"
+        >
+          <Sparkles className="h-4 w-4 mr-2" />
+          Accept Changes
+        </Button>
+        <Button
+          onClick={() => {
+            if (!editableCharacter || !aiEditedCharacter) return;
+            setAiEditedCharacter(null);
+          }}
+          variant="secondary"
+          size="sm"
+        >
+          <Sparkles className="h-4 w-4 mr-2" />
+          Decline Changes
+        </Button>
+      </div>
+    );
+  };
 
   const renderSaveButton = (section: string) => (
     <Button
@@ -298,3 +381,130 @@ export default function CharacterPage() {
     </ScrollArea>
   );
 }
+
+const GenerateButton = ({
+  title,
+  field,
+  editableCharacter,
+  aiEditedCharacter,
+  onSuccess,
+}: {
+  title: string;
+  field: keyof Character;
+  editableCharacter: Character | null;
+  aiEditedCharacter: Character | null;
+  onSuccess: (character: Character) => void;
+}) => {
+  const [isGenerating, setIsGenerating] = useState(false);
+
+  return (
+    <Dialog>
+      <DialogTrigger asChild>
+        <Button variant="outline" size="sm">
+          <Sparkles className="h-4 w-4 mr-2" />
+          Generate with AI
+        </Button>
+      </DialogTrigger>
+      <DialogContent className="sm:max-w-[425px] lg:max-w-6xl">
+        <DialogHeader>
+          <DialogTitle>Generate {title} Content</DialogTitle>
+          <DialogDescription>
+            Use AI to generate new content for this field. Review and edit
+            before saving.
+          </DialogDescription>
+        </DialogHeader>
+        <form
+          className="flex flex-col gap-4"
+          onSubmit={async (e) => {
+            e.preventDefault();
+            const formData = new FormData(e.currentTarget);
+            const prompt = formData.get("prompt") as string;
+            const keepCurrent = formData.get("keepCurrent") === "on";
+            const numFields =
+              parseInt(formData.get("numFields") as string) || 1;
+
+            if (!editableCharacter || aiEditedCharacter || !prompt) return;
+
+            console.log({
+              character_data: editableCharacter,
+              prompt,
+              field,
+              keep_current: keepCurrent,
+              num_fields: numFields,
+            });
+
+            setIsGenerating(true);
+            try {
+              const response = await fetch(
+                "http://localhost:3001/character/gen",
+                {
+                  method: "POST",
+                  headers: {
+                    "Content-Type": "application/json",
+                  },
+                  body: JSON.stringify({
+                    character_data: editableCharacter,
+                    prompt,
+                    field,
+                    keep_current: keepCurrent,
+                    num_fields: numFields,
+                  }),
+                }
+              );
+
+              if (!response.ok) {
+                throw new Error("Failed to generate content");
+              }
+
+              const data = await response.json();
+
+              if (data.error) {
+                throw new Error(data.error);
+              }
+
+              const newAiCharacter = {
+                ...editableCharacter,
+                [field]: data.content,
+              };
+
+              onSuccess(newAiCharacter);
+            } catch (error) {
+            } finally {
+              setIsGenerating(false);
+            }
+          }}
+        >
+          <div className="flex flex-col gap-2">
+            <Label htmlFor="prompt">Prompt</Label>
+            <Input
+              id="prompt"
+              name="prompt"
+              placeholder="Enter prompt for AI generation"
+              className="col-span-3"
+            />
+          </div>
+          <div className="flex flex-col gap-2">
+            <Label htmlFor="numFields">Number of Fields</Label>
+            <Input
+              id="numFields"
+              name="numFields"
+              type="number"
+              min="1"
+              defaultValue="1"
+              className="col-span-3"
+            />
+          </div>
+          <div className="flex items-center gap-2">
+            <Checkbox id="keepCurrent" name="keepCurrent" />
+            <Label htmlFor="keepCurrent">Keep current fields</Label>
+          </div>
+          <DialogFooter>
+            <Button disabled={isGenerating} type="submit">
+              {isGenerating ? <ProgressSpinner /> : "Generate"}
+            </Button>
+          </DialogFooter>
+        </form>
+      </DialogContent>
+    </Dialog>
+  );
+};
