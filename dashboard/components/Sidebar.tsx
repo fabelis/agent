@@ -37,41 +37,36 @@ const data = [
   },
   {
     title: "Generation",
-    url: "/gen",
+    url: "",
     icon: PencilRuler,
     disabled: true,
     items: [
       {
         title: "TTS",
-        url: "/gen/tts",
+        url: "",
       },
       {
         title: "Art",
-        url: "/gen/art",
+        url: "",
       },
       {
         title: "Storytelling",
-        url: "/gen/storytelling",
+        url: "",
       },
     ],
   },
   {
     title: "Settings",
-    url: "/settings",
+    url: "/settings/general",
     icon: Settings2,
-    disabled: true,
     items: [
       {
+        title: "General",
+        url: "/settings/general",
+      },
+      {
         title: "Clients",
-        url: "/settings?tab=clients",
-      },
-      {
-        title: "Misc",
-        url: "/settings?tab=misc",
-      },
-      {
-        title: "Environment",
-        url: "/settings?tab=environment",
+        url: "/settings/clients",
       },
     ],
   },
