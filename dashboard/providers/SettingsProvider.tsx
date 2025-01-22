@@ -21,11 +21,58 @@ export const SettingsContext = createContext<SettingsContextProps | undefined>(
 
 export type Settings = {
   path_name: string;
-  client_configs: any;
+  client_configs: ClientConfigs;
   enabled_clients: string[];
   completion_provider: string;
   embedding_provider: string;
   db: string;
+};
+
+export type ClientConfigs = {
+  api: ApiConfig;
+  discord: DiscordConfig;
+  storytelling: StorytellingConfig;
+  telegram: TelegramConfig;
+  truth: TruthConfig;
+  twitter: TwitterConfig;
+};
+
+export type ApiConfig = {
+  port: number;
+};
+
+export type DiscordConfig = {
+  surrounding_messages: number;
+  selection_rate: number;
+  debug: boolean;
+};
+
+export type StorytellingConfig = {
+  port: number;
+  paragraph_count: number[];
+  use_tts: boolean;
+};
+
+export type TelegramConfig = {
+  surrounding_messages: number;
+  selection_rate: number;
+  debug: boolean;
+};
+
+export type TruthConfig = {
+  post_delay: number[];
+  reply_delay: number[];
+  search_delay: number;
+  delay: number;
+  debug: boolean;
+};
+
+export type TwitterConfig = {
+  post_delay: number[];
+  reply_delay: number[];
+  search_delay: number;
+  delay: number;
+  debug: boolean;
 };
 
 export interface SettingsProviderProps {
