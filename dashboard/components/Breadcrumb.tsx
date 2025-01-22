@@ -18,7 +18,6 @@ const data: any = {
 
 const Breadcrumb = () => {
   const pathname = usePathname();
-  const { selectedCharacter } = useCharacter();
 
   return (
     <BreadcrumbComponent>
@@ -38,15 +37,14 @@ const BreadcrumbData = () => {
 
   return (
     <>
-      {pathname == "/chat" ||
-        ("/character" && (
-          <>
-            <BreadcrumbSeparator className="hidden md:block" />
-            <BreadcrumbItem>
-              <BreadcrumbPage>{selectedCharacter?.alias}</BreadcrumbPage>
-            </BreadcrumbItem>
-          </>
-        ))}
+      {pathname == ("/chat" || "/character") && (
+        <>
+          <BreadcrumbSeparator className="hidden md:block" />
+          <BreadcrumbItem>
+            <BreadcrumbPage>{selectedCharacter?.alias}</BreadcrumbPage>
+          </BreadcrumbItem>
+        </>
+      )}
     </>
   );
 };

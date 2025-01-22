@@ -153,33 +153,36 @@ async fn main() -> Result<(), Box<dyn Error>> {
 
     if args.dashboard {
         if args.force {
-            info!("[SETUP] Killing processes on ports 3000, 3001, 3002...");
-            let res = std::process::Command::new("lsof")
-                .arg("-t")
-                .arg("-i:3000")
-                .arg("-i:3001")
-                .arg("-i:3002")
-                .output()
-                .expect("Failed to execute lsof");
-            let pids: Vec<i32> = res
-                .stdout
-                .split(|b| *b == b'\n')
-                .filter_map(|pid_str| String::from_utf8_lossy(pid_str).parse().ok())
-                .collect();
-            if pids.is_empty() {
-                info!("[SETUP] No conflicting processes were detected");
-            } else if let Err(e) = std::process::Command::new("kill")
-                .arg("-9")
-                .args(pids.iter().map(|pid| pid.to_string()))
-                .status()
-            {
-                error!("[SETUP] Failed to kill processes: {}", e);
+            if cfg!(unix) {
+                info!("[SETUP] Killing processes on ports 3000, 3001...");
+                let res = std::process::Command::new("lsof")
+                    .arg("-t")
+                    .arg("-i:3000")
+                    .arg("-i:3001")
+                    .output()
+                    .expect("Failed to execute lsof");
+                let pids: Vec<i32> = res
+                    .stdout
+                    .split(|b| *b == b'\n')
+                    .filter_map(|pid_str| String::from_utf8_lossy(pid_str).parse().ok())
+                    .collect();
+                if pids.is_empty() {
+                    info!("[SETUP] No conflicting processes were detected");
+                } else if let Err(e) = std::process::Command::new("kill")
+                    .arg("-9")
+                    .args(pids.iter().map(|pid| pid.to_string()))
+                    .status()
+                {
+                    error!("[SETUP] Failed to kill processes: {}", e);
+                } else {
+                    info!("[SETUP] Killed processes on ports 3000, 3001");
+                    sleep(tokio::time::Duration::from_secs(1)).await;
+                }
             } else {
-                info!("[SETUP] Killed processes on ports 3000, 3001, 3002");
-                sleep(tokio::time::Duration::from_secs(1)).await;
+                error!("[SETUP] Force kill is only supported on Unix-like systems");
             }
         }
-        let mut client = DashboardClient::new(completion_model, config.clone());
+        let client = DashboardClient::new(completion_model, embedding_model, config.clone());
         client.start().await;
         return Ok(());
     }
