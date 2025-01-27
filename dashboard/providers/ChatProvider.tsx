@@ -57,7 +57,7 @@ export const ChatProvider: React.FC<ChatProviderProps> = ({ children }) => {
       ],
     }));
 
-    fetch("http://localhost:3001/prompt", {
+    fetch("http://localhost:3001/chat/prompt", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

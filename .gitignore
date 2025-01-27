@@ -6,7 +6,7 @@ Cargo.lock
 
 # json file ignore
 characters/*
-*.json
+/*.json
 
 # exceptions
 !characters/character.example.json

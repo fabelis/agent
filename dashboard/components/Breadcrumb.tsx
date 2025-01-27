@@ -13,12 +13,18 @@ import { usePathname } from "next/navigation";
 const data: any = {
   "/": "Home",
   "/chat": "Chat Room",
-  "/character": "Character",
+  "/character": "Character Editor",
+  "/settings/general": "Settings Editor",
+  "/settings/clients": "Settings Editor",
+};
+
+const settingsData: any = {
+  "/settings/general": "General",
+  "/settings/clients": "Clients",
 };
 
 const Breadcrumb = () => {
   const pathname = usePathname();
-  const { selectedCharacter } = useCharacter();
 
   return (
     <BreadcrumbComponent>
@@ -38,11 +44,19 @@ const BreadcrumbData = () => {
 
   return (
     <>
-      {pathname == "/chat" && (
+      {pathname == ("/chat" || "/character") && (
         <>
           <BreadcrumbSeparator className="hidden md:block" />
           <BreadcrumbItem>
             <BreadcrumbPage>{selectedCharacter?.alias}</BreadcrumbPage>
+          </BreadcrumbItem>
+        </>
+      )}
+      {pathname.startsWith("/settings") && (
+        <>
+          <BreadcrumbSeparator className="hidden md:block" />
+          <BreadcrumbItem>
+            <BreadcrumbPage>{settingsData[pathname]}</BreadcrumbPage>
           </BreadcrumbItem>
         </>
       )}

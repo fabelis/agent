@@ -19,6 +19,7 @@ import {
   SidebarMenuSubItem,
 } from "@/components/ui/sidebar";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 export function NavMain({
   items,
@@ -35,6 +36,8 @@ export function NavMain({
     }[];
   }[];
 }) {
+  const pathname = usePathname();
+
   return (
     <SidebarGroup>
       <SidebarGroupLabel>Navigation</SidebarGroupLabel>
@@ -43,7 +46,7 @@ export function NavMain({
           <Collapsible
             key={item.title}
             asChild
-            defaultOpen={item.isActive}
+            defaultOpen={pathname == item.url || item.isActive}
             data-disabled={item.disabled}
             className="data-[disabled=true]:!cursor-default data-[disabled=true]:!opacity-70"
             onClick={(e) => {
@@ -58,6 +61,7 @@ export function NavMain({
                 asChild
                 tooltip={item.title}
                 data-disabled={item.disabled}
+                isActive={pathname == item.url || item.isActive}
                 className="data-[disabled=true]:!cursor-default data-[disabled=true]:!opacity-70"
               >
                 <Link href={item.url}>
@@ -81,7 +85,10 @@ export function NavMain({
                     <SidebarMenuSub>
                       {item.items?.map((subItem) => (
                         <SidebarMenuSubItem key={subItem.title}>
-                          <SidebarMenuSubButton asChild>
+                          <SidebarMenuSubButton
+                            isActive={subItem.url == pathname}
+                            asChild
+                          >
                             <Link href={subItem.url}>
                               <span>{subItem.title}</span>
                             </Link>

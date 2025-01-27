@@ -9,7 +9,7 @@ import { ArrowUp } from "lucide-react";
 export default function ChatPage() {
   const { selectedCharacter } = useCharacter();
   return (
-    <div className="flex min-w-0 flex-col h-full">
+    <div className="flex min-w-0 flex-col h-full pb-[9rem]">
       <ChatMessages />
       <ChatBox />
     </div>

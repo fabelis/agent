@@ -1,8 +1,8 @@
 use rand::seq::SliceRandom;
-use serde::Deserialize;
-use std::fs;
+use serde::{Deserialize, Serialize};
+use std::{fs, io::Write};
 
-#[derive(Deserialize, Clone)]
+#[derive(Deserialize, Clone, Serialize)]
 pub struct Character {
     pub alias: String,
     pub bio: String,
@@ -32,6 +32,17 @@ impl Character {
     pub fn load(&mut self) -> Result<(), Box<dyn std::error::Error>> {
         let content = fs::read_to_string(self.path.clone())?;
         *self = serde_json::from_str(&content)?;
+        Ok(())
+    }
+
+    pub fn save_to_file(&self) -> Result<(), Box<dyn std::error::Error>> {
+        let json_data = serde_json::to_vec_pretty(self)?;
+        let mut file = fs::OpenOptions::new()
+            .write(true)
+            .truncate(true)
+            .create(true)
+            .open(self.path.clone())?;
+        file.write_all(&json_data)?;
         Ok(())
     }
 
