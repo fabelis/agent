@@ -1,3 +1,4 @@
+use super::deepseek::{DeepSeekCompletionModel, DeepSeekResponse};
 use rig::{
     completion::{CompletionError, CompletionModel, CompletionRequest, CompletionResponse},
     providers::{
@@ -18,6 +19,7 @@ pub enum CompletionModelEnum {
     OpenAI(openai_completion::CompletionModel),
     Perplexity(perplexity_completion::CompletionModel),
     XAI(xai_completion::completion::CompletionModel),
+    DeepSeek(DeepSeekCompletionModel),
 }
 
 pub enum CompletionResponseEnum {
@@ -27,6 +29,7 @@ pub enum CompletionResponseEnum {
     OpenAI(openai_completion::CompletionResponse),
     Perplexity(perplexity_completion::CompletionResponse),
     XAI(xai_completion::completion::xai_api_types::CompletionResponse),
+    DeepSeek(DeepSeekResponse),
 }
 
 impl CompletionModel for CompletionModelEnum {
@@ -77,6 +80,13 @@ impl CompletionModel for CompletionModelEnum {
                 Ok(CompletionResponse {
                     choice: response.choice,
                     raw_response: CompletionResponseEnum::XAI(response.raw_response),
+                })
+            }
+            Self::DeepSeek(model) => {
+                let response = model.completion(request).await?;
+                Ok(CompletionResponse {
+                    choice: response.choice,
+                    raw_response: CompletionResponseEnum::DeepSeek(response.raw_response),
                 })
             }
         }

@@ -79,6 +79,21 @@ where
                 .content
                 .clone()
                 .unwrap_or_default(),
+            CompletionResponseEnum::DeepSeek(response) => {
+                if let Some(choices) = &response.choices {
+                    if let Some(choice) = choices.first() {
+                        if let Some(msg) = &choice.message {
+                            msg.content.clone().unwrap_or_default()
+                        } else {
+                            "".to_string()
+                        }
+                    } else {
+                        "".to_string()
+                    }
+                } else {
+                    "".to_string()
+                }
+            }
         }
     }
 }

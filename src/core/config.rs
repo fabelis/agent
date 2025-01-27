@@ -66,6 +66,8 @@ pub enum CompletionProvider {
     Perplexity,
     #[serde(rename = "xai")]
     XAI,
+    #[serde(rename = "deepseek")]
+    DeepSeek,
 }
 
 // Client

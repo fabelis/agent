@@ -121,6 +121,15 @@ async fn main() -> Result<(), Box<dyn Error>> {
             info!("[SETUP] Loaded XAI Completion Model");
             model
         }
+        CompletionProvider::DeepSeek => {
+            let api_key = env::var("DEEPSEEK_API_KEY").expect("DEEPSEEK_API_KEY not set");
+            let model =
+                env::var("DEEPSEEK_COMPLETION_MODEL").expect("DEEPSEEK_COMPLETION_MODEL not set");
+            let client = crate::providers::completion::deepseek::Client::new(&api_key);
+            let model = CompletionModelEnum::DeepSeek(client.completion_model(&model));
+            info!("[SETUP] Loaded DeepSeek Completion Model");
+            model
+        }
     };
 
     // load embedding model
